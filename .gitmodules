@@ -1,0 +1,3 @@
+[submodule "jquery-plugins"]
+	path = jquery-plugins
+	url = https://github.com/dfilatov/jquery-plugins.git
