@@ -1,61 +1,44 @@
-var inherit = require('inherit');
+//var inherit = require('inherit');
+var config = require('./config-reader');
+var autorization = require('./authorization');
 
-var IAuthirzation = inherit({
-    __constructor: function(cloud){
-        this.cloud = cloud;
+var project = {
+    __constructor: function () {
+        this.config = config.getConfig();
+        this.token = autorization.getToken();
+
+
+        this.upload();
     },
 
-    /**
-     * Function get token from cloud
-     */
-    getToken: function(){
+    upload: function(){
+        var http = require('http');
+        var options = {
+                host: 'webdav.yandex.ru',
+//                port: '80',
+//                path: '/compile',
+                method: 'PUT',
+                headers: {
+                    Accept: '*/*',
+                    Authorization: 'OAuth '+this.token,
+                    Expect: '100-continue',
+                    'Content-Type': 'application/binary',
+                    'Content-Length': post_data.length
+                }
+        };
+
+        request = http.request(options, function (result) {
+            console.log(result);
+        });
+        request.on('error', function (error) {
+            console.log('Something with http request ' + error);
+        });
+        request.end();
+
+
+        PUT /a/readme.txt HTTP/1.1
+
     }
-});
+};
 
-var YaDiskAuthorization = inherit(IAuthirzation,{
-
-});
-
-
-var IConfigReader = inherit({
-    __constructor: function(){
-        /**
-         * Driver for read config
-         */
-        this.reader = FileConfigReader;
-
-        /**
-         * Config values
-         */
-        this.config = {};
-    },
-
-    /**
-     * Read all filename
-     * @return {Object} JSON
-     *
-    read: function(){
-    },
-    */
-
-    /**
-     * Function get one config value
-     * @param {String}  config key
-     * @return
-     */
-    get: function(key){
-
-    },
-
-    /**
-     * Function get all config values
-     * @return {Object} JSON
-     */
-    getConfig: function(){
-        return this.config;
-    }
-});
-
-var FileConfigReader = inherit(IConfigReader,{
-
-});
+project.__constructor();
