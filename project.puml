@@ -1,0 +1,17 @@
+@startuml
+
+    title синхронизатор
+
+    activate FileManager
+    create "authorization"
+    create "logger"
+    create "database"
+    create "config"
+    create "diff"
+
+    loop
+        "authorization" -> "diff" : render()
+    end
+    deactivate FileManager
+
+@enduml

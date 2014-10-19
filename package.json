@@ -1,0 +1,31 @@
+{
+    "name": "ya-sync",
+    "version": "0.0.1",
+    "description": "syncronization any folder",
+    "author": {
+        "name": "Seyar Chapuh",
+        "email": "seyarchapuh@yandex.ru"
+    },
+    "repository": {
+        "type": "git",
+        "url": "http://github.com/seyar/ya-sync.git"
+    },
+    "scripts": {
+        "lint": "./node_modules/.bin/jshint && ./node_modules/.bin/jscs ./",
+        "test": "mocha -R spec -u bdd --recursive ./**/*.test.js"
+    },
+    "precommit": ["lint", "test"],
+    "dependencies": {},
+    "devDependencies": {
+        "inherit": "^2.2.0",
+        "jshint": "^2.5.2",
+        "jscs": "^1.7.3",
+        "precommit-hook": "^1.0.7",
+        "chai": "^1.9.1",
+        "mocha": "^1.20.1"
+    },
+    "main": "index",
+    "engines": {
+        "node": ">= 0.8.0"
+    }
+}
