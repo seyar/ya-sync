@@ -15,8 +15,7 @@
     "test": "mocha -R spec -u bdd --recursive ./**/*.test.js"
   },
   "precommit": [
-    "lint",
-    "test"
+    "lint"
   ],
   "dependencies": {
     "grunt-rsync": "^0.6.2",

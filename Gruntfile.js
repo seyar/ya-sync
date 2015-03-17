@@ -1,88 +1,76 @@
+/**
+ * Только локальное копирование
+ *
+ * @type {Boolean}
+ */
+LOCAL_ONLY = true;
+
+/**
+ * Только удаленное копирование
+ *
+ * @type {Boolean}
+ */
+REMOTE_ONLY = false;
+
+/**
+ * Источник
+ * @type {String}
+ */
+SOURCE = '/Users/seyar/Documents/photos/';
+
+/**
+ * Куда копировать. Локальное хранилище
+ * @type {String}
+ */
+DESTINATION_LOCAL = '/Users/seyar/Documents/photos-bak/';
+
+/**
+ * Куда копировать удаленное хранилище по ssh
+ * требуются прокинутые ключи
+ *
+ * @type {{host: String, folder: String}}
+ */
+DESTINATION_REMOTE = {host: 'seyar@192.168.0.150', folder: '/home/seyar/photos/'};
+
+var logger = require('./logger');
+
 module.exports = function (grunt) {
     var fs = require('fs');
 
-    /**
-     * Дополняет строку слева
-     */
-    function lpad(str, padString, length) {
-        while (str.length < length) {
-            str = padString + str;
-        }
-        return str;
-    }
+    var srcExists = grunt.file.exists(SOURCE);
+    var destExists = grunt.file.exists(DESTINATION_LOCAL);
 
-    /**
-     * Записывает лог
-     *
-     * @param {String} fileName
-     * @param {Buffer} buffer
-     */
-    function write(fileName, buffer) {
-        fs.open(__dirname + fileName, 'a', function (err, fd) {
-            if (err) {
-                throw 'error opening file: ' + err;
-            } else {
-                var date = new Date();
-                var d = lpad(date.getDate(), '0', 2);
-                var m = date.getMonth() + 1;
-                var y = date.getFullYear();
-                var h = lpad(date.getHours(), '0', 2);
-                var i = lpad(date.getMinutes(), '0', 2);
-                var s = lpad(date.getSeconds(), '0', 2);
-                var fulldate = 'd.m.y h:i:s'
-                    .replace('d', d)
-                    .replace('m', m)
-                    .replace('y', y)
-                    .replace('h', h)
-                    .replace('i', i)
-                    .replace('s', s) + ' ';
-                var dateBuffer = new Buffer(fulldate);
-                var newBuffer = Buffer.concat([dateBuffer, buffer]);
-                fs.writeSync(fd, newBuffer, 0, newBuffer.length, null, function (err) {
-                    if (err) {
-                        throw 'error writing file: ' + err;
-                    }
-                    fs.close(fd);
-                });
+    var rsync = {
+        options: {
+            args: ['--verbose'],
+            exclude: ['.*', 'sorter*', 'video-sorter'],
+            recursive: true,
+            onStderr: function (data) {
+                logger('/error.log', data);
             }
-        });
+        }
+    };
+    if (srcExists && destExists && LOCAL_ONLY) {
+        rsync.dist = {
+            options: {
+                src: SOURCE,
+                dest: DESTINATION_LOCAL
+            }
+        };
+    }
+    if (srcExists && REMOTE_ONLY) {
+        rsync.stage = {
+            options: {
+                src: SOURCE,
+                dest: DESTINATION_REMOTE.folder,
+                host: DESTINATION_REMOTE.host
+                // delete: true // Careful this option could cause data loss, read the docs!
+            }
+        };
     }
 
     grunt.initConfig({
-        rsync: {
-            options: {
-                args: ['--verbose'],
-                exclude: ['.*', 'sorter*', 'video-sorter'],
-                recursive: true,
-                onStderr: function (data) {
-                    write('/error.log', data);
-                }
-            },
-            dist: {
-                options: {
-                    src: '/Users/seyar/Documents/photos/',
-                    dest: '/Users/seyar/Documents/photos-bak/'
-                }
-            },
-            stage: {
-                options: {
-                    src: '/Users/seyar/Documents/photos/',
-                    dest: '/home/seyar/photos/',
-                    host: 'seyar@192.168.0.150'
-                    // delete: true // Careful this option could cause data loss, read the docs!
-                }
-            }
-
-            // ,
-            // prod: {
-            //    options: {
-            //        src: '../dist/',
-            //        dest: '/var/www/site',
-            //        host: 'user@live-host',
-            //        delete: true // Careful this option could cause data loss, read the docs!
-            //    }
-            // }
-        }
+        rsync: rsync
     });
 
     grunt.loadNpmTasks('grunt-rsync');
