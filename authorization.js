@@ -17,7 +17,7 @@ var IAuthirzation = inherit({
      * Function get token from cloud
      */
     getToken: function () {
-        return '608e527bc36543d184573cc2ad6ea711';
+        return '';
 //        var c = this.cloud.getToken();
 //        console.log(c);
     }
