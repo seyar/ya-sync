@@ -18,8 +18,14 @@
     "lint"
   ],
   "dependencies": {
+    "bla": "^1.2.0",
+    "checksum": "^0.1.1",
+    "extend": "^2.0.0",
     "grunt-rsync": "^0.6.2",
-    "inherit": "^2.2.0"
+    "handy-http": "git://github.com/dimik/node-handy-http.git",
+    "inherit": "^2.2.0",
+    "vow": "^0.4.8",
+    "xml2js": "^0.4.6"
   },
   "devDependencies": {
     "chai": "^1.9.1",
