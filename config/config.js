@@ -8,6 +8,8 @@ module.exports = {
     // 608e527bc36543d184573cc2ad6ea711&token_type=bearer&state=
 
     disk: {
+        remoteRoot: 'no-synced/',
+        localRoot: '/Users/seyar/Documents/clientside-bkp',
         url: 'https://webdav.yandex.ru/',
         method: 'GET',
         headers: {

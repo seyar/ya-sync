@@ -32,7 +32,7 @@ DESTINATION_LOCAL = '/Users/seyar/Documents/photos-bak/';
  */
 DESTINATION_REMOTE = {host: 'seyar@192.168.0.150', folder: '/home/seyar/photos/'};
 
-var logger = require('./logger');
+var logger = require('./lib/logger');
 
 module.exports = function (grunt) {
     var fs = require('fs');

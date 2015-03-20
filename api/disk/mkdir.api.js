@@ -1,6 +1,6 @@
 var ApiMethod = require('bla').ApiMethod;
-var config = require('./../../config');
-var vowHandyHttp = require('../../vow-handy-http');
+var config = require('./../../config/config');
+var vowHandyHttp = require('../../lib/vow-handy-http');
 var extend = require('extend');
 
 /**
@@ -29,13 +29,13 @@ module.exports = new ApiMethod({
         return vowHandyHttp(ext)
             .then(function (data) {
                 // если ответ пустой значит все ок. 201
-                if (Boolean(data.toString())) {
+                if (Boolean(data.toString()) && data.toString().indexOf('resource already exists') === -1) {
                     throw new Error(data.toString());
                 }
                 return true;
             })
             .fail(function (error) {
-                return error;
+                throw new Error(error);
             });
     }
 });

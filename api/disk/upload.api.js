@@ -1,6 +1,6 @@
 var ApiMethod = require('bla').ApiMethod;
-var config = require('./../../config');
-var vowHandyHttp = require('../../vow-handy-http');
+var config = require('./../../config/config');
+var vowHandyHttp = require('../../lib/vow-handy-http');
 var extend = require('extend');
 var checksum = require('checksum');
 var fs = require('fs');
@@ -84,7 +84,7 @@ module.exports = new ApiMethod({
                 };
 
                 var ext = extend(true, {}, config.disk, fileOptions, headers);
-                ext.url += path.normalize(params.destination + '/' + path.basename(params.localPath));
+                ext.url += path.normalize(params.destination);
 
                 return vowHandyHttp(ext)
                     .then(function (data) {
@@ -96,7 +96,7 @@ module.exports = new ApiMethod({
                         return true;
                     })
                     .fail(function (error) {
-                        return error;
+                        throw new Error(error);
                     });
             });
     }
