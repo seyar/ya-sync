@@ -1,5 +1,5 @@
-//var fs = require('fs');
-//var sys = require("sys");
+// var fs = require('fs');
+// var sys = require("sys");
 var inherit = require('inherit');
 
 var IAuthirzation = inherit({
@@ -17,7 +17,7 @@ var IAuthirzation = inherit({
      * Function get token from cloud
      */
     getToken: function () {
-        return '608e527bc36543d184573cc2ad6ea711';
+        return '';
 //        var c = this.cloud.getToken();
 //        console.log(c);
     }
@@ -32,11 +32,11 @@ var IAuthirzation = inherit({
 
 var YaDiskAuthorization = inherit(IAuthirzation, {
 
-    __constructor: function(){
+    __constructor: function () {
 
     },
 
-    login: function(config){
+    login: function (config) {
 
     },
 
@@ -47,18 +47,18 @@ var YaDiskAuthorization = inherit(IAuthirzation, {
      * @returns {String}
      * @private
      */
-    __makeRequest: function(url, options){
+    __makeRequest: function (url, options) {
         var http = require('http');
         var options = {
-                host: 'oauth.yandex.ru',
+            host: 'oauth.yandex.ru',
 //                port: '80',
 //                path: '/compile',
 //                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                    'Content-Length': post_data.length
-                }
-            };
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Content-Length': post_data.length
+            }
+        };
 
         request = http.request(options, function (result) {
 
