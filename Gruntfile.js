@@ -3,26 +3,28 @@
  *
  * @type {Boolean}
  */
-LOCAL_ONLY = true;
+LOCAL_ONLY = false;
 
 /**
  * Только удаленное копирование
  *
  * @type {Boolean}
  */
-REMOTE_ONLY = false;
+REMOTE_ONLY = true;
 
 /**
  * Источник
+ *
  * @type {String}
  */
-SOURCE = '/Users/seyar/Documents/photos/';
+SOURCE = '/Volumes/FAT/media/photos/';
 
 /**
  * Куда копировать. Локальное хранилище
+ *
  * @type {String}
  */
-DESTINATION_LOCAL = '/Users/seyar/Documents/photos-bak/';
+DESTINATION_LOCAL = '/home/seyar/media/photos/';
 
 /**
  * Куда копировать удаленное хранилище по ssh
