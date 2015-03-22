@@ -9,7 +9,7 @@ module.exports = {
 
     disk: {
         remoteRoot: 'no-synced/',
-        localRoot: '/Users/seyar/Documents/clientside-bkp',
+        localRoot: '/Volumes/FAT/media',
         url: 'https://webdav.yandex.ru/',
         method: 'GET',
         headers: {
