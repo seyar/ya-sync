@@ -38,9 +38,15 @@ var Handlers = inherit(/** @lends Handlers.prototype */ {
             });
     },
 
-    getList: function () {
-        api
-            .exec('get-list'/*, {depth: 1}*/)
+    /**
+     * Retrieve file and folder list
+     *
+     * @param {String} folder
+     * @returns {*}
+     */
+    getList: function (folder) {
+        return api
+            .exec('get-list', {folder: path.normalize([this._remoteRoot, folder].join('/'))})
             .then(function (response) {
                 return response;
             })

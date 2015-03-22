@@ -15,6 +15,12 @@ module.exports = new ApiMethod({
     name: 'get-list',
     description: 'Returns files and folders from server',
     params: {
+        folder: {
+            type: 'String',
+            description: 'Start folder',
+            defaultValue: '/',
+            required: true
+        },
         depth: {
             type: 'Number',
             description: 'depth',
@@ -37,6 +43,7 @@ module.exports = new ApiMethod({
             }
         };
         var ext = extend(true, {}, config.disk, options);
+        ext.url += params.folder;
 
         if (params.start && params.offset) {
             ext.url += '?offset=' + params.offset + '&amount=' + params.start;
