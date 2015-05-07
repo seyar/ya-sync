@@ -5,26 +5,29 @@ var inherit = require('inherit');
 var config = require('./../config/config');
 var path = require('path');
 
+var vow = require('vow');
+
+var LRU = require('lru-cache');
+var cache = LRU(1000 * 60 * 60 * 60 * 24); // one day
+
 var Handlers = inherit(/** @lends Handlers.prototype */ {
     __constructor: function () {
-        this._remoteRoot = config.disk.remoteRoot;
-        this._localRoot = config.disk.localRoot;
+        this._remoteRoot = config.remoteRoot;
+        this._localRoot = config.localRoot;
     },
 
     /**
      * Makes directory
      *
      * @param {String} name
-     * @param {Boolean} isRoot
      * @returns {*}
      */
-    mkdir: function (name, isRoot) {
-        isRoot = isRoot || false;
+    mkdir: function (name) {
         if (!name || name === 'undefined') {
             throw new blaError(blaError.INTERNAL_ERROR, 'Name must be a string');
         }
 
-        var pathArray = isRoot ?  [this._remoteRoot, name] : [this._remoteRoot, path.basename(this._localRoot), name];
+        var pathArray = [this._remoteRoot, name];
         return api
             .exec('mkdir', {
                 destination: path.normalize(pathArray.join('/'))
@@ -45,9 +48,18 @@ var Handlers = inherit(/** @lends Handlers.prototype */ {
      * @returns {*}
      */
     getList: function (folder) {
+        var cacheKey = folder.replace(/\//gi, '');
+        var cachedList = cache.get(cacheKey);
+        if (cachedList) {
+            return vow.resolve(cachedList);
+        }
         return api
             .exec('get-list', {folder: path.normalize([this._remoteRoot, folder].join('/'))})
             .then(function (response) {
+                if (response.toString().indexOf('Error') !== -1) {
+                    throw new Error(response);
+                }
+                cache.set(cacheKey, response);
                 return response;
             })
             .fail(function (error) {
@@ -65,7 +77,8 @@ var Handlers = inherit(/** @lends Handlers.prototype */ {
         if (!localPath || localPath === 'undefined') {
             throw new blaError(blaError.INTERNAL_ERROR, 'localPath must be a string');
         }
-        var destination = path.normalize([this._remoteRoot, path.basename(this._localRoot), localPath].join('/'));
+        var destination = path.normalize([this._remoteRoot, localPath].join('/'));
+        localPath = localPath.replace(path.basename(this._localRoot), '');
         var source = path.normalize(this._localRoot + '/' + localPath);
 
         return api

@@ -1,7 +1,8 @@
 module.exports = {
+    remoteRoot: 'no-synced/',
+    localRoot: '/Volumes/FAT/media',
+
     disk: {
-        remoteRoot: 'no-synced/',
-        localRoot: '/Volumes/FAT/media',
         url: 'https://webdav.yandex.ru/',
         method: 'GET',
         headers: {
