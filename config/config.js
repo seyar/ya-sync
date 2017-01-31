@@ -1,12 +1,12 @@
 module.exports = {
-    remoteRoot: 'no-synced/',
-    localRoot: '/Volumes/FAT/media',
+    remoteRoot: 'no-synced/media/',
+    localRoot: '/Volumes/Data/media/photos',
 
     disk: {
         url: 'https://webdav.yandex.ru/',
         method: 'GET',
         headers: {
-            Authorization: 'OAuth ********************629d2f565cd'
+            Authorization: 'OAuth ***'
         }
     }
 };
