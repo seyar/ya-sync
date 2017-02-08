@@ -13,7 +13,6 @@ var cache = LRU(1000 * 60 * 60 * 60 * 24); // one day
 var Handlers = inherit(/** @lends Handlers.prototype */ {
     __constructor: function () {
         this._remoteRoot = config.remoteRoot;
-        this._localRoot = config.localRoot;
     },
 
     /**
@@ -73,13 +72,13 @@ var Handlers = inherit(/** @lends Handlers.prototype */ {
      * @param {String} localPath /folder1/folder2/some.png
      * @returns {Promise}
      */
-    upload: function (localPath) {
+    upload: function (localPath, root) {
         if (!localPath || localPath === 'undefined') {
             throw new blaError(blaError.INTERNAL_ERROR, 'localPath must be a string');
         }
         var destination = path.normalize([this._remoteRoot, localPath].join('/'));
-        localPath = localPath.replace(path.basename(this._localRoot), '');
-        var source = path.normalize(this._localRoot + '/' + localPath);
+        localPath = localPath.replace(path.basename(root), '');
+        var source = path.normalize(root + '/' + localPath);
 
         return api
             .exec('upload', {
