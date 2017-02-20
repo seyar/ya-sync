@@ -16,11 +16,8 @@ Also you can access to yandex disk api through [Basic authorisation](https://tec
 
 #####There is no test yet ;(#####
 
-Usage for local or rsync(ssh):
+Usage:
 ```
-/usr/local/bin/node /usr/local/bin/grunt
+/usr/local/bin/node ./index.js /path_to_your_folder
 ```
-For webdav copy use:
-```
-/usr/local/bin/node ./index.js
-```
+Command will create `/no-synced/path_to_your_folder` in your yandex disk.
