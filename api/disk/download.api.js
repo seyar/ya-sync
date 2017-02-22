@@ -2,7 +2,6 @@ var ApiMethod = require('bla').ApiMethod;
 var config = require('./../../config/config');
 var vowHandyHttp = require('../../lib/vow-handy-http');
 var extend = require('extend');
-var vow = require('vow');
 
 /**
  * Загрузка файла
