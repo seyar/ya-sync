@@ -42,7 +42,7 @@ module.exports = new ApiMethod({
                 Depth: params.depth
             }
         };
-        var ext = extend({}, config.sync, options);
+        var ext = extend(true, {}, config.sync, options);
         ext.url += params.folder;
 
         if (params.start && params.offset) {
@@ -52,10 +52,13 @@ module.exports = new ApiMethod({
         return vowHandyHttp(ext)
             .then(function (data) {
                 var defer = vow.defer();
+                if (data && data.toString() && data.toString().indexOf('authoriz') !== -1) {
+                    defer.reject('Authorize error');
+                }
 
                 parser.parseString(data, function (err, result) {
                     if (err) {
-                        defer.reject(err);
+                        defer.reject('Cannot parse xml. ' + err);
                     }
                     defer.resolve(result);
                 });
@@ -64,9 +67,6 @@ module.exports = new ApiMethod({
             })
             .then(function (data) {
                 return data['d:multistatus']['d:response'] || null;
-            })
-            .fail(function (error) {
-                return error;
             });
     }
 });

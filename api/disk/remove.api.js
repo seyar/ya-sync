@@ -22,18 +22,17 @@ module.exports = new ApiMethod({
     action: function (params) {
         var file = params.file.trim();
         if (file === '/' || file === '') {
-            var message = 'Cannot remove /';
-            return vow.reject(message);
+            return vow.reject('Cannot remove /');
         }
 
-        var httpParams = extend({}, config.sync, {
+        var httpParams = extend(true, {}, config.sync, {
             method: 'DELETE'
         });
         httpParams.url += file;
 
         return vowHandyHttp(httpParams)
             .fail(function (error) {
-                throw new Error(error);
+                throw Error('remove error. ' + error);
             });
     }
 });

@@ -43,7 +43,7 @@ module.exports = new ApiMethod({
 
             fs.stat(params.localPath, function (error, stat) {
                 if (error) {
-                    defer.reject(error);
+                    defer.reject('Can`t read. ' + error);
                 } else {
                     defer.resolve({'Content-length': stat.size});
                 }
@@ -56,7 +56,7 @@ module.exports = new ApiMethod({
                 var md5Defer = vow.defer();
                 checksum.file(params.localPath, {algorithm: 'md5'}, function (error, sum) {
                     if (error) {
-                        md5Defer.reject(error);
+                        md5Defer.reject('Can`t check md5 sum. ' + error);
                     }
                     fileOptions.Etag = sum;
                     md5Defer.resolve(fileOptions);
@@ -67,7 +67,7 @@ module.exports = new ApiMethod({
                 var sha256Defer = vow.defer();
                 checksum.file(params.localPath, {algorithm: 'sha256'}, function (error, sum) {
                     if (error) {
-                        sha256Defer.reject(error);
+                        sha256Defer.reject('Can`t check sha256 sum. ' + error);
                     }
                     fileOptions.Sha256 = sum;
                     sha256Defer.resolve(fileOptions);
@@ -83,7 +83,7 @@ module.exports = new ApiMethod({
                     'Content-Encoding': 'gzip'
                 };
 
-                var ext = extend({}, config.sync, fileOptions, headers);
+                var ext = extend(true, {}, config.sync, fileOptions, headers);
                 ext.url += path.normalize(params.destination);
 
                 return vowHandyHttp(ext)

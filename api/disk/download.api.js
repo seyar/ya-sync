@@ -19,7 +19,7 @@ module.exports = new ApiMethod({
         }
     },
     action: function (params) {
-        var httpParams = extend({}, config.sync);
+        var httpParams = extend(true, {}, config.sync);
         httpParams.url += params.file;
 
         return vowHandyHttp(httpParams)
