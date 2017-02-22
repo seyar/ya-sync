@@ -14,10 +14,10 @@ Short:
 
 Also you can access to yandex disk api through [Basic authorisation](https://tech.yandex.ru/disk/doc/dg/concepts/quickstart-docpage/#oauth_1)
 
-#####There is no test yet ;(#####
+#####There is no test yet.#####
 
 Usage:
 ```
-/usr/local/bin/node ./index.js /path_to_your_folder
+node ./index.js /path_to_your_folder
 ```
-Command will create `/no-synced/path_to_your_folder` in your yandex disk.
+Command will create `/no-synced/media/path_to_your_folder` in your yandex disk.
