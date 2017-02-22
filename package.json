@@ -1,7 +1,7 @@
 {
   "name": "ya-sync",
   "version": "0.0.1",
-  "description": "syncronization any folder",
+  "description": "Uploads any folder to Yandex Disk",
   "author": {
     "name": "Seyar Chapuh",
     "email": "seyarchapuh@yandex.ru"
