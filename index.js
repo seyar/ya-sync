@@ -2,10 +2,11 @@
 'use strict';
 var programm = require('commander');
 var Sync = require('./lib/webdav-r-sync');
+var packageJson = require('./package.json');
 
 programm
-    .version('0.0.1')
-    .description('Yandex disk syncronizer usage node index.js [options] <file>')
+    .version(packageJson.version)
+    .description('Yandex disk syncronizer.')
     .usage('[options] <file>')
     .option('-v --verbose', 'Show progress')
     .parse(process.argv);

@@ -42,7 +42,7 @@ module.exports = new ApiMethod({
                 Depth: params.depth
             }
         };
-        var ext = extend(true, {}, config.disk, options);
+        var ext = extend({}, config.sync, options);
         ext.url += params.folder;
 
         if (params.start && params.offset) {

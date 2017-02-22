@@ -66,11 +66,62 @@ var Handlers = inherit(/** @lends Handlers.prototype */ {
             });
     },
 
+    getListFromRoot: function (folder) {
+        return api
+            .exec('get-list', {folder: path.normalize(folder)})
+            .then(function (response) {
+                if (response.toString().indexOf('Error') !== -1) {
+                    throw new Error(response);
+                }
+                return response;
+            })
+            .fail(function (error) {
+                throw new blaError(error.type || blaError.INTERNAL_ERROR, error.message || error.toString());
+            });
+    },
+
+    /**
+     * @param {String} file
+     * @returns {*}
+     */
+    download: function (file) {
+        return api
+            .exec('download', {file: path.normalize(file)})
+            .then(function (response) {
+                if (response.toString().indexOf('Error') !== -1) {
+                    throw new Error(response);
+                }
+                return response;
+            })
+            .fail(function (error) {
+                throw new blaError(error.type || blaError.INTERNAL_ERROR, error.message || error.toString());
+            });
+    },
+
+    /**
+     * @param {String} file
+     * @returns {*}
+     */
+    remove: function (file) {
+        return api
+            .exec('remove', {file: path.normalize(file)})
+            .then(function (response) {
+                if (response.toString().indexOf('Error') !== -1) {
+                    throw new Error(response);
+                }
+                return response;
+            })
+            .fail(function (error) {
+                throw new blaError(error.type || blaError.INTERNAL_ERROR, error.message || error.toString());
+            });
+    },
+
     /**
      * Uploads a file
      *
      * @param {String} localPath /folder1/folder2/some.png
-     * @returns {Promise}
+     * @param {String} root
+     * @returns {*}
      */
     upload: function (localPath, root) {
         if (!localPath || localPath === 'undefined') {

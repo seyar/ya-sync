@@ -83,7 +83,7 @@ module.exports = new ApiMethod({
                     'Content-Encoding': 'gzip'
                 };
 
-                var ext = extend(true, {}, config.disk, fileOptions, headers);
+                var ext = extend({}, config.sync, fileOptions, headers);
                 ext.url += path.normalize(params.destination);
 
                 return vowHandyHttp(ext)
