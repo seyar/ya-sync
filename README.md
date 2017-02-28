@@ -21,3 +21,6 @@ Usage:
 node ./index.js /path_to_your_folder
 ```
 Command will create `/no-synced/media/path_to_your_folder` in your yandex disk.
+
+`node ./download.js -v /path_for_save_torrent_file`
+Command will download torrent-file from /torrents folder
