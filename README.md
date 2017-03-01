@@ -22,5 +22,11 @@ node ./index.js /path_to_your_folder
 ```
 Command will create `/no-synced/media/path_to_your_folder` in your yandex disk.
 
-`node ./download.js -v /path_for_save_torrent_file`
-Command will download torrent-file from /torrents folder
+`./download.js -v /torrents/ ./folder_for_save_torrent_file/`
+
+Command will download torrent-file from remote /torrents folder
+#####Options
+`-v --verbose - Show progress`
+
+It not simple dowloader. It will download first file in folder and remove them.
+I am using this script for grab torrent files and save to watch dir in transmission.

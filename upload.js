@@ -7,7 +7,12 @@ var packageJson = require('./package.json');
 programm
     .version(packageJson.version)
     .description('Yandex disk syncronizer.')
-    .usage('[options] <file>')
+    .usage('[options] <localPath> <remotePath>')
+    .arguments('<remotePath> <localPath>')
+    .action(function (remote, local) {
+        remotePath = remote;
+        localPath = local;
+    })
     .option('-v --verbose', 'Show progress')
     .parse(process.argv);
 
