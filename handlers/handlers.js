@@ -6,8 +6,9 @@ var path = require('path');
 
 var vow = require('vow');
 
-var LRU = require('lru-cache');
-var cache = LRU(1000 * 60 * 60 * 60 * 24); // one day
+var dirty = require('dirty');
+var db = dirty('yaSync');
+var CACHING_TIME = 1000 * 60 * 60 * 60 * 24; // one day.
 
 var Handlers = inherit(/** @lends Handlers.prototype */ {
     /**
@@ -40,40 +41,31 @@ var Handlers = inherit(/** @lends Handlers.prototype */ {
      * Retrieve file and folder list
      *
      * @param {String} folder
+     * @param {Boolean} useCache
      * @returns {*}
      */
-    getList: function (folder) {
+    getList: function (folder, useCache) {
         var cacheKey = folder.replace(/\//gi, '');
-        var cachedList = cache.get(cacheKey);
-        if (cachedList) {
-            return vow.resolve(cachedList);
+        if (useCache) {
+            var cachedValue = db.get(cacheKey);
+            if (cachedValue && Date.now() - cachedValue.time < CACHING_TIME) {
+                return vow.resolve(cachedValue.response);
+            } else if (cachedValue && Date.now() - cachedValue.time > CACHING_TIME) {
+                db.rm(cacheKey);
+            }
         }
+
         return api
             .exec('get-list', {folder: path.normalize(folder)})
             .then(function (response) {
                 if (response.toString().indexOf('Error') !== -1) {
                     throw Error(response);
                 }
-                cache.set(cacheKey, response);
+                useCache && db.set(cacheKey, {response: response, time: Date.now()});
                 return response;
             })
             .fail(function (error) {
                 console.error('Folder ' + folder + ' not found.');
-                console.trace(error);
-                throw new blaError(error.type || blaError.INTERNAL_ERROR, error.message || error.toString());
-            });
-    },
-
-    getListFromRoot: function (folder) {
-        return api
-            .exec('get-list', {folder: path.normalize(folder)})
-            .then(function (response) {
-                if (response.toString().indexOf('Error') !== -1) {
-                    throw new Error(response);
-                }
-                return response;
-            })
-            .fail(function (error) {
                 console.trace(error);
                 throw new blaError(error.type || blaError.INTERNAL_ERROR, error.message || error.toString());
             });
@@ -125,6 +117,7 @@ var Handlers = inherit(/** @lends Handlers.prototype */ {
      * @returns {*}
      */
     upload: function (localPath, remotePath) {
+        var cacheKey = path.dirname(remotePath).replace(/\//gi, '');
         if (!localPath || localPath === 'undefined' || !remotePath || remotePath === 'undefined') {
             throw new blaError(blaError.INTERNAL_ERROR, 'localPath must be a string');
         }
@@ -135,6 +128,7 @@ var Handlers = inherit(/** @lends Handlers.prototype */ {
                 destination: path.normalize(remotePath)
             })
             .then(function (response) {
+                db.rm(cacheKey);
                 return response;
             })
             .fail(function (error) {
