@@ -23,9 +23,9 @@ module.exports = new ApiMethod({
     name: 'upload',
     description: 'Uploads a file',
     params: {
-        localPath: {
+        source: {
             type: 'String',
-            description: 'local path to file.',
+            description: 'Source local path to file.',
             required: true
         },
         destination: {
@@ -36,12 +36,12 @@ module.exports = new ApiMethod({
     },
     action: function (params) {
         var defer = vow.defer();
-        fs.exists(params.localPath, function (exists) {
+        fs.exists(params.source, function (exists) {
             if (!exists) {
-                defer.reject('File ' + params.localPath + ' does not exists');
+                defer.reject('File ' + params.source + ' does not exists');
             }
 
-            fs.stat(params.localPath, function (error, stat) {
+            fs.stat(params.source, function (error, stat) {
                 if (error) {
                     defer.reject('Can`t read. ' + error);
                 } else {
@@ -54,7 +54,7 @@ module.exports = new ApiMethod({
             .promise()
             .then(function (fileOptions) {
                 var md5Defer = vow.defer();
-                checksum.file(params.localPath, {algorithm: 'md5'}, function (error, sum) {
+                checksum.file(params.source, {algorithm: 'md5'}, function (error, sum) {
                     if (error) {
                         md5Defer.reject('Can`t check md5 sum. ' + error);
                     }
@@ -65,7 +65,7 @@ module.exports = new ApiMethod({
             })
             .then(function (fileOptions) {
                 var sha256Defer = vow.defer();
-                checksum.file(params.localPath, {algorithm: 'sha256'}, function (error, sum) {
+                checksum.file(params.source, {algorithm: 'sha256'}, function (error, sum) {
                     if (error) {
                         sha256Defer.reject('Can`t check sha256 sum. ' + error);
                     }
@@ -76,14 +76,14 @@ module.exports = new ApiMethod({
             })
             .then(function (fileOptions) {
                 var headers = {
-                    data: fs.createReadStream(params.localPath),
+                    data: fs.createReadStream(params.source),
                     method: 'PUT',
                     Expect: '100-continue',
                     'Content-Type': 'application/binary',
                     'Content-Encoding': 'gzip'
                 };
 
-                var ext = extend(true, {}, config.sync, fileOptions, headers);
+                var ext = extend(true, {}, config.auth, fileOptions, headers);
                 ext.url += path.normalize(params.destination);
 
                 return vowHandyHttp(ext)

@@ -42,7 +42,7 @@ module.exports = new ApiMethod({
                 Depth: params.depth
             }
         };
-        var ext = extend(true, {}, config.sync, options);
+        var ext = extend(true, {}, config.auth, options);
         ext.url += params.folder;
 
         if (params.start && params.offset) {
@@ -58,7 +58,7 @@ module.exports = new ApiMethod({
 
                 parser.parseString(data, function (err, result) {
                     if (err) {
-                        defer.reject('Cannot parse xml. ' + err);
+                        defer.reject('Cannot parse xml. ' + err + data.toString());
                     }
                     defer.resolve(result);
                 });

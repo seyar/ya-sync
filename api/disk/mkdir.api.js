@@ -23,7 +23,7 @@ module.exports = new ApiMethod({
             method: 'MKCOL'
         };
 
-        var ext = extend(true, {}, config.sync, options);
+        var ext = extend(true, {}, config.auth, options);
         ext.url += params.destination;
 
         return vowHandyHttp(ext)

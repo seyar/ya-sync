@@ -2,7 +2,6 @@ var Api = require('bla').Api;
 var api = new Api(__dirname + './../api/**/*.api.js');
 var blaError = require('bla').ApiError;
 var inherit = require('inherit');
-var config = require('./../config/config');
 var path = require('path');
 
 var vow = require('vow');
@@ -11,31 +10,28 @@ var LRU = require('lru-cache');
 var cache = LRU(1000 * 60 * 60 * 60 * 24); // one day
 
 var Handlers = inherit(/** @lends Handlers.prototype */ {
-    __constructor: function () {
-        this._remoteRoot = config.remoteRoot;
-    },
-
     /**
      * Makes directory
      *
-     * @param {String} name
+     * @param {String} destination
      * @returns {*}
      */
-    mkdir: function (name) {
-        if (!name || name === 'undefined') {
+    mkdir: function (destination) {
+        destination = path.normalize(destination);
+        if (!destination || destination === 'undefined') {
             throw new blaError(blaError.INTERNAL_ERROR, 'Name must be a string');
         }
 
-        var pathArray = [this._remoteRoot, name];
         return api
             .exec('mkdir', {
-                destination: path.normalize(pathArray.join('/'))
+                destination: destination
             })
             .then(function (response) {
                 return response;
             })
             .fail(function (error) {
-                error.message += ', path=' + path.normalize(pathArray.join('/'));
+                console.trace(error);
+                error.message += ', destination=' + destination.normalize(destination);
                 throw new blaError(error.type || blaError.INTERNAL_ERROR, error.message || error.toString());
             });
     },
@@ -53,15 +49,17 @@ var Handlers = inherit(/** @lends Handlers.prototype */ {
             return vow.resolve(cachedList);
         }
         return api
-            .exec('get-list', {folder: path.normalize([this._remoteRoot, folder].join('/'))})
+            .exec('get-list', {folder: path.normalize(folder)})
             .then(function (response) {
                 if (response.toString().indexOf('Error') !== -1) {
-                    throw new Error(response);
+                    throw Error(response);
                 }
                 cache.set(cacheKey, response);
                 return response;
             })
             .fail(function (error) {
+                console.error('Folder ' + folder + ' not found.');
+                console.trace(error);
                 throw new blaError(error.type || blaError.INTERNAL_ERROR, error.message || error.toString());
             });
     },
@@ -76,6 +74,7 @@ var Handlers = inherit(/** @lends Handlers.prototype */ {
                 return response;
             })
             .fail(function (error) {
+                console.trace(error);
                 throw new blaError(error.type || blaError.INTERNAL_ERROR, error.message || error.toString());
             });
     },
@@ -94,6 +93,7 @@ var Handlers = inherit(/** @lends Handlers.prototype */ {
                 return response;
             })
             .fail(function (error) {
+                console.trace(error);
                 throw new blaError(error.type || blaError.INTERNAL_ERROR, error.message || error.toString());
             });
     },
@@ -112,6 +112,7 @@ var Handlers = inherit(/** @lends Handlers.prototype */ {
                 return response;
             })
             .fail(function (error) {
+                console.trace(error);
                 throw new blaError(error.type || blaError.INTERNAL_ERROR, error.message || error.toString());
             });
     },
@@ -120,26 +121,24 @@ var Handlers = inherit(/** @lends Handlers.prototype */ {
      * Uploads a file
      *
      * @param {String} localPath /folder1/folder2/some.png
-     * @param {String} root
+     * @param {String} remotePath
      * @returns {*}
      */
-    upload: function (localPath, root) {
-        if (!localPath || localPath === 'undefined') {
+    upload: function (localPath, remotePath) {
+        if (!localPath || localPath === 'undefined' || !remotePath || remotePath === 'undefined') {
             throw new blaError(blaError.INTERNAL_ERROR, 'localPath must be a string');
         }
-        var destination = path.normalize([this._remoteRoot, localPath].join('/'));
-        localPath = localPath.replace(path.basename(root), '');
-        var source = path.normalize(root + '/' + localPath);
 
         return api
             .exec('upload', {
-                destination: destination,
-                localPath: source
+                source: path.normalize(localPath),
+                destination: path.normalize(remotePath)
             })
             .then(function (response) {
                 return response;
             })
             .fail(function (error) {
+                console.trace(error);
                 error.message += ' destination=' + destination + ', local=' + source;
                 throw new blaError(error.type || blaError.INTERNAL_ERROR, error.message || error.toString());
             }, this);

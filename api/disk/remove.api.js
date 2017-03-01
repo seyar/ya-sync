@@ -25,7 +25,7 @@ module.exports = new ApiMethod({
             return vow.reject('Cannot remove /');
         }
 
-        var httpParams = extend(true, {}, config.sync, {
+        var httpParams = extend(true, {}, config.auth, {
             method: 'DELETE'
         });
         httpParams.url += file;

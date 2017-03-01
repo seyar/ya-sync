@@ -1,22 +1,28 @@
 #!/usr/bin/env node
 'use strict';
 var programm = require('commander');
-var Sync = require('./lib/webdav-r-sync');
+var Upload = require('./lib/upload');
 var packageJson = require('./package.json');
+var config = require('./config/config');
+
+var remotePath = config.defaultUploadFolder;
+var localPath = process.cwd();
 
 programm
     .version(packageJson.version)
-    .description('Yandex disk syncronizer.')
+    .description('Yandex disk uploader.')
     .usage('[options] <localPath> <remotePath>')
-    .arguments('<remotePath> <localPath>')
-    .action(function (remote, local) {
-        remotePath = remote;
+    .arguments('<localPath> <remotePath>')
+    .action(function (local, remote) {
         localPath = local;
+        remotePath = remote;
     })
     .option('-v --verbose', 'Show progress')
     .parse(process.argv);
 
-var dir = programm.args[programm.args.length - 1] || '/Volumes/Data/media/photos';
-
-var s = new Sync({localRoot: dir, verbose: Boolean(programm.verbose)});
-s.run();
+var upload = new Upload({
+    localPath: localPath,
+    remotePath: remotePath,
+    verbose: Boolean(programm.verbose)
+});
+upload.run();

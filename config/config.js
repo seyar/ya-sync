@@ -1,15 +1,12 @@
 module.exports = {
-    remoteRoot: 'no-synced/media/',
-
-    sync: {
+    auth: {
         url: 'https://webdav.yandex.ru/',
         method: 'GET',
         headers: {
-            Authorization: 'OAuth Aw'
+            Authorization: 'OAuth A***'
         }
     },
 
-    torrentsDownloader: {
-        folder: '/torrents/'
-    }
+    defaultUploadFolder: '/',
+    defaultDownloadPath: '/'
 };
